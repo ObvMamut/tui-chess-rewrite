@@ -1,0 +1,12 @@
+/home/mamut/0x00/0x02/tui-chess-rewrite/target/debug/deps/libarrayvec-b4472df6e69f0428.rmeta: /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/lib.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/maybe_uninit.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array_string.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/char.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/errors.rs
+
+/home/mamut/0x00/0x02/tui-chess-rewrite/target/debug/deps/libarrayvec-b4472df6e69f0428.rlib: /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/lib.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/maybe_uninit.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array_string.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/char.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/errors.rs
+
+/home/mamut/0x00/0x02/tui-chess-rewrite/target/debug/deps/arrayvec-b4472df6e69f0428.d: /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/lib.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/maybe_uninit.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array_string.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/char.rs /home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/errors.rs
+
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/lib.rs:
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/maybe_uninit.rs:
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array.rs:
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/array_string.rs:
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/char.rs:
+/home/mamut/.cargo/registry/src/index.crates.io-6f17d22bba15001f/arrayvec-0.5.2/src/errors.rs:
