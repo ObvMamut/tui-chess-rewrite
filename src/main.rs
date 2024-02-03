@@ -1225,6 +1225,8 @@ impl Game {
         let piece_that_was_taken = self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize];
         let piece_to_move = self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize];
 
+        
+
         self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 0;
         self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = piece_to_move;
 
