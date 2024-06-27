@@ -15,10 +15,13 @@ use std::{io, thread, time};
 use std::ascii::Char;
 use extra::rand::Randomizer;
 use std::io::Read;
+use std::ptr::read;
 use std::thread::current;
 use termion::async_stdin;
 use run_script::ScriptOptions;
 use crate::graphics::{display_all, display_move, draw};
+use termion::event::{Event, MouseEvent};
+use termion::input::{MouseTerminal};
 
 
 enum Mode {
@@ -37,6 +40,7 @@ enum CommandDebug {
     InValid
 }
 
+#[derive(Debug)]
 enum Round {
     White,
     Black
@@ -53,21 +57,25 @@ struct Game {
 
 struct Board {
     board: [[usize; 8]; 8],
+    white_original_position_checkers: [bool; 3],
+    black_original_position_checkers: [bool; 3],
 }
 
 impl Board {
     fn new() -> Self {
         Board {
             board : [
-                [1, 2, 3, 4, 0, 3, 2, 1],
+                [1, 0, 0, 0, 5, 0, 0, 1],
                 [6, 6, 6, 6, 0, 6, 6, 6],
                 [0, 0, 12, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 11, 0, 0, 0],
                 [0, 0, 0, 0, 5, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 12, 12, 12, 0, 12, 12, 12],
-                [7, 8, 9, 10, 0, 9, 8, 7]
+                [7, 0, 0, 0, 11, 0, 0, 7]
             ],
+            white_original_position_checkers : [true, true, true],
+            black_original_position_checkers : [true, true, true],
         }
     }
 }
@@ -140,10 +148,15 @@ impl Game {
 
     fn is_valid_move(&mut self, command: Vec<Vec<Option<u32>>>) -> bool {
 
+        println!("TRIGGER 149");
+
         let original_position = &command[0];
         let future_position = &command[1];
         let piece_to_move = self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize];
         let mut next_position = vec![future_position[0].unwrap(), future_position[1].unwrap()];
+
+
+        println!("{:?}", piece_to_move);
 
         // Check if the original position is a position where a piece exists
         match self.round {
@@ -152,6 +165,8 @@ impl Game {
                     7 | 8 | 9 | 10 | 11 | 12 => {
                     }
                     _ => {
+                        println!("166 {:?}", self.round);
+
                         return false
                     }
                 }
@@ -164,6 +179,8 @@ impl Game {
             }
             _ => {}
         }
+
+        println!("HAHAHAHAHHA");
 
         // Check for Castling
 
@@ -189,12 +206,16 @@ impl Game {
                 }
             }
 
-            _ => {}
+            _ => {
+                println!("TRIGGER 199");
+
+            }
         }
 
         let possible_moves: Vec<Vec<u32>> = Game::get_possible_moves(self, piece_to_move, original_position);
 
         if possible_moves.is_empty() {
+            println!("trigger 209");
             return false
         }
 
@@ -228,7 +249,7 @@ impl Game {
                     }
 
                     // Capture to the left
-                    if pos_x as i32 - 1 >= 0 {
+                    if pos_x as i32 - 1 >= 0 { // TODO!
                         // Check if the position up-left has enemy
                         match self.board.board[pos_y as usize - 1][pos_x as usize - 1] {
                             1 | 2 | 3 | 4 | 5 | 6 => {
@@ -971,7 +992,7 @@ impl Game {
 
                 // Straights
 
-                let mut straights = Game::get_possible_moves(self, tower_numeric_value, position);
+                let mut straights = Game::;get_possible_moves(self, tower_numeric_value, position);
 
                 // Diagonals
 
@@ -1225,20 +1246,73 @@ impl Game {
         let piece_that_was_taken = self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize];
         let piece_to_move = self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize];
 
-        
 
-        self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 0;
-        self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = piece_to_move;
+        let mut new_board = self.board.board;
 
+        // Casteling
+
+        // White
+
+        if new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] == 11 && new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] == 7 {
+
+            println!("TRIGGER WHITE");
+
+
+            if future_position[1] == Some(0) {
+                // Long
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 7;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = 11;
+
+            } else if future_position[1] == Some(7) {
+
+                // Short
+
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 0;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = 0;
+
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize + 1] = 7;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize - 1] = 11;
+
+            }
+
+
+        } else if new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] == 5 && new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] == 1 {
+
+            println!("TRIGGER ROCHADE BLACK");
+
+
+            if future_position[1] == Some(0) {
+                // Long
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 1;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = 5;
+
+            } else if future_position[1] == Some(7) {
+
+                // Short
+
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 0;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = 0;
+
+                new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize + 1] = 1;
+                new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize - 1] = 5;
+
+            }
+
+
+        } else {
+            println!("TRIGGER NOW");
+
+            new_board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = 0;
+            new_board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = piece_to_move;
+
+        }
 
         match self.round {
             Round::White => {
                 if Game::is_check("white") == true {
                     // Checks when White moved if there is a check on the white king if YES it returns board to original
 
-                    self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] = piece_to_move;
-                    self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] = piece_that_was_taken;
-
+                    self.board.board = new_board;
                 }
             }
             _ => {}
@@ -1326,27 +1400,32 @@ impl Game {
         draw(50, 11, "MOVE : ".to_string(), "white");
 
         let mut command = vec![];
-        let mut cmd = String::from("");
+        let mut cmd = "".to_string();
 
         let stdin = stdin();
-        let mut stdout = stdout().into_raw_mode().unwrap();
+        let mut stdout = MouseTerminal::from(stdout().into_raw_mode().unwrap());
 
-        for c in stdin.keys() {
+        //write!(stdout, "{}{}q to exit. Click, click, click!", termion::clear::All, termion::cursor::Goto(1, 1)).unwrap();
+        stdout.flush().unwrap();
 
-            write!(stdout,
-                   "{}",
-                   termion::cursor::Hide)
-                .unwrap();
+        for c in stdin.events() {
+            let evt = c.unwrap();
+            match evt {
 
-            match c.unwrap() {
-                Key::Char('q') => {
+                Event::Key(Key::Char('q')) => {
                     break
                 },
-                Key::Char('e') => {
+                Event::Key(Key::Char('e')) => {
+                    draw(1, 1, "REGISTERS".to_string(), "white");
                     break
                 }
 
-                Key::Char(c) => {
+                Event::Key(Key::Char(c)) => {
+
+
+                    draw(1, 1, "FU".to_string(), "white");
+
+                    // println!("{:?}", cmd);
                     cmd.push(c);
                     display_move(cmd.clone());
                 },
@@ -1357,14 +1436,19 @@ impl Game {
             stdout.flush().unwrap();
         }
 
+        println!("KAWABUNGA");
+
         write!(stdout, "{}", termion::cursor::Hide).unwrap();
 
-        display_all(self.board.board);
+        //display_all(self.board.board);
 
         if Game::check_correct_cmd(cmd.clone()) == false {
+            println!("GU GU gA GA");
             command = vec![];
             return command
         }
+
+
 
 
         let pos1 = vec![cmd.clone().chars().nth(0).unwrap().to_digit(10), cmd.clone().chars().nth(2).unwrap().to_digit(10)];
@@ -1374,16 +1458,146 @@ impl Game {
         command.push(pos1);
         command.push(pos2);
 
+        println!("{:?}", command);
+
         if Game::is_valid_move(self, command.clone()) == false {
+            println!("TRIGGER 1455");
             command = vec![];
             return command
         }
+
+        println!("{:?}", command);
 
         return command
     }
 
     fn castling(&mut self, original_position: &Vec<Option<u32>>, future_position: &Vec<Option<u32>>) -> bool {
-        return true
+
+
+        // White or Black castleing
+
+        match self.board.board[original_position[0].unwrap() as usize][original_position[1].unwrap() as usize] {
+
+            // White
+
+            11 => {
+
+                // See if future position = castle
+
+                match self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] {
+                    7 => {}
+                    _ => {
+                        return false
+                    }
+                }
+
+                // Long or Short
+
+                match future_position[1].unwrap() {
+                    // Long
+                    0 => {
+
+                        // Check if position between king and caste are empty
+
+                        for i in 1..4 {
+                            if self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize + i] != 0 {
+                                return false
+                            }
+                        }
+
+                        // Check if King and Castle are at original positions
+                        if self.board.white_original_position_checkers[0] == true && self.board.white_original_position_checkers[1] == true {
+                            return true
+                        }
+                    }
+
+                    // Short
+                    7 => {
+
+                        // Check if position between king and caste are empty
+
+                        for i in 1..3 {
+                            if self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize - i] != 0 {
+                                return false
+                            }
+                        }
+
+                        // Check if King and Castle are at original positions
+                        if self.board.white_original_position_checkers[1] == true && self.board.white_original_position_checkers[2] == true {
+                            return true
+                        }
+
+                    }
+
+                    _ => {
+                        return false
+                    }
+                }
+
+
+            }
+
+            5 => {
+
+                // See if future position = castle
+
+                match self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize] {
+                    1 => {}
+                    _ => {
+                        return false
+                    }
+                }
+
+                // Long or Short
+
+                match future_position[1].unwrap() {
+                    // Long
+                    0 => {
+
+                        // Check if position between king and caste are empty
+
+                        for i in 1..4 {
+                            if self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize + i] != 0 {
+                                return false
+                            }
+                        }
+
+                        // Check if King and Castle are at original positions
+                        if self.board.black_original_position_checkers[0] == true && self.board.black_original_position_checkers[1] == true {
+                            return true
+                        }
+                    }
+
+                    // Short
+                    7 => {
+
+                        // Check if position between king and caste are empty
+
+                        for i in 1..3 {
+                            if self.board.board[future_position[0].unwrap() as usize][future_position[1].unwrap() as usize - i] != 0 {
+                                return false
+                            }
+                        }
+
+                        // Check if King and Castle are at original positions
+                        if self.board.black_original_position_checkers[1] == true && self.board.black_original_position_checkers[2] == true {
+                            return true
+                        }
+
+                    }
+
+                    _ => {
+                        return false
+                    }
+                }
+            }
+
+            _ => {
+                return false
+            }
+        }
+
+        return false
     }
 
 }

@@ -1,6 +1,6 @@
-/home/mamut/0x00/0x02/tui-chess-rewrite/target/debug/build/proc-macro2-f56fe6dc2b3713eb/out/libproc_macro2.rmeta: build/probe.rs
+/home/mamut/all/programming/tui-chess-rewrite/target/debug/build/proc-macro2-f56fe6dc2b3713eb/out/libproc_macro2.rmeta: build/probe.rs
 
-/home/mamut/0x00/0x02/tui-chess-rewrite/target/debug/build/proc-macro2-f56fe6dc2b3713eb/out/proc_macro2.d: build/probe.rs
+/home/mamut/all/programming/tui-chess-rewrite/target/debug/build/proc-macro2-f56fe6dc2b3713eb/out/proc_macro2.d: build/probe.rs
 
 build/probe.rs:
 
